@@ -1,0 +1,70 @@
+# Skillora — Example Configuration
+#
+# This TOML file serves as a reference for all major tunable parameters.
+# Copy it to:
+#   • ./skillora.toml (project-local)
+#   • ~/.skillora/config.toml (user-global)
+#
+# The library will look for these locations automatically in future releases.
+# All values shown are the current defaults.
+
+[llm]
+# Default model used by the LLM-as-judge in testing and evaluation
+judge_model = "gpt-4o-mini"
+temperature = 0.0
+max_tokens = 400
+timeout_seconds = 45
+
+[benchmark]
+# Default number of scenarios when running `skillora benchmark`
+scenario_count = 20
+# Statistical confidence target (used for adaptive scenario generation)
+confidence_target = 0.95
+timeout_seconds = 60
+# Output formats supported by BenchmarkReport.save_csv / future exporters
+output_formats = ["csv", "json", "markdown"]
+
+[registry]
+# Default location for the local skill catalog (index + installed skills)
+path = "~/.skillora/registry"
+index_file = "index.json"
+auto_scan_on_start = true
+# When true, `skillora registry install` also registers the skill globally
+auto_register = true
+
+[testing]
+default_test_count = 12
+# Whether `skillora test` prints full details by default
+verbose = false
+# Mock judge scoring curve (for deterministic test runs)
+judge_score_baseline = 7.5
+
+[output]
+# Visual & formatting defaults (Neo-brutalist palette is respected by CLI)
+primary_color = "#ff004d"
+accent_color = "#00ff9f"
+neo_brutalist = true
+# Table border style used by Rich
+border_style = "thick"
+# Preferred output directory for generated files (docs, reports)
+default_output_dir = "skillora-output"
+
+[docs]
+include_examples = true
+include_benchmark_section = true
+include_compatibility_matrix = true
+# Markdown template variant (future extensibility)
+template = "default"
+
+# Global overrides (can be overridden by CLI flags)
+[globals]
+strict_validation = true
+log_level = "INFO"
+# When true, every skill execution records token usage even in mock mode
+track_tokens = true
+
+# Example skill-specific overrides (demonstration only)
+[skills.weather-lookup]
+llm_judge_model = "gpt-4-turbo"
+benchmark_scenarios = 50
+tags = ["api", "external", "weather"]

@@ -1,0 +1,106 @@
+"""{{ class_name }}.
+
+{{ description }}
+
+This file was scaffolded by Skillora. Implement the .execute() method below.
+The skill follows a strict but lightweight contract and works with LangGraph,
+CrewAI, AutoGen and any framework that accepts a Skill instance.
+"""
+
+from __future__ import annotations
+
+from typing import Any, Dict
+
+from skillora import Skill, SkillResult, skill
+
+
+@skill(
+    name="{{ skill_name }}",
+    description="{{ description }}",
+    version="{{ version }}",
+    tags=["example", "utility"],
+)
+class {{ class_name }}(Skill):
+    """{{ class_name }} implements the standard Skill interface.
+
+    Replace the placeholder logic with your domain-specific implementation.
+    You may call external APIs, run calculations, query vector stores, etc.
+    Always return a SkillResult (never raise unless the error is unrecoverable).
+    """
+
+    def execute(self, context: Dict[str, Any]) -> SkillResult:
+        """Execute the skill.
+
+        All inputs are passed through the context dictionary. The method must
+        be deterministic when possible and always return a SkillResult.
+
+        Args:
+            context: Input data. Typical keys: "query", "input", "parameters".
+
+        Returns:
+            SkillResult with success flag, output payload and optional metadata.
+        """
+        # --- YOUR IMPLEMENTATION GOES HERE ---
+        query = context.get("query") or context.get("input") or str(context)
+
+        if not query or str(query).strip() == "":
+            return SkillResult(
+                success=False,
+                error="No query or input provided in context",
+                metadata={"context_keys": list(context.keys())},
+            )
+
+        # Placeholder implementation – replace with real logic.
+        # For a weather skill you would call an API here.
+        output = {
+            "status": "ok",
+            "input": query,
+            "result": "Placeholder result from {{ class_name }}. "
+            "Replace this with your actual skill behavior.",
+            "example_data": {
+                "temperature_c": 22,
+                "condition": "sunny",
+                "source": "mock",
+            },
+        }
+
+        return SkillResult(
+            success=True,
+            output=output,
+            metadata={
+                "skill": "{{ skill_name }}",
+                "version": "{{ version }}",
+                "processed_by": "skillora",
+            },
+        )
+
+
+# Module-level instance for easy importing and CLI discovery
+skill = {{ class_name }}()
+
+
+# ----------------------------------------------------------------------
+# Example test cases (used by skillora test and manual verification)
+# ----------------------------------------------------------------------
+EXAMPLE_TEST_CASES = [
+    {"query": "Basic functionality test"},
+    {"query": "Edge case with empty parameters", "parameters": {}},
+    {"input": "Alternative key support", "user_id": "test-user-001"},
+]
+
+
+if __name__ == "__main__":
+    print(f"Running {{ skill_name }} ({{ class_name }})")
+    print("=" * 60)
+
+    for i, case in enumerate(EXAMPLE_TEST_CASES, 1):
+        print(f"\nTest case {i}: {case}")
+        result = skill.execute(case)
+        print(f"Success : {result.success}")
+        if result.success:
+            print(f"Output  : {result.output}")
+        else:
+            print(f"Error   : {result.error}")
+        print("-" * 40)
+
+    print("\nSkill ready. Run `skillora test {{ skill_name }}` for full suite.")
